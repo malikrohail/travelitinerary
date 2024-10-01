@@ -1,14 +1,15 @@
-# 🎈 Blank app template
+# Travel Dropbox BTT Website 
 
-A simple Streamlit app template for you to modify!
+UI Framework for our travel website. Users will be able to input a pdf, text, and more to our bot that will then be able to output a travel itinerary. There will also be a recommendations section to allow users to see nearby activities and restaurants. The data will be focused on New York City. 
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://blank-app-template.streamlit.app/)
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://travelbtt.streamlit.app/)
 
 ### How to run it on your own machine
 
 1. Install the requirements
 
    ```
+
    $ pip install -r requirements.txt
    ```
 
@@ -17,3 +18,4 @@ A simple Streamlit app template for you to modify!
    ```
    $ streamlit run streamlit_app.py
    ```
+
