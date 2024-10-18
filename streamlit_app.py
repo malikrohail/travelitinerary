@@ -54,6 +54,7 @@ with st.form("itinerary_form"):
 # will need to update edit vs safe versions 
 with st.form("final_itinerary_form"):
     st.write("Travel Itinerary")
+    st.caption("Safe travels!")
     with st.expander("Passengers"):
         st.write("1. Name: ")
     with st.expander("Flight Information"):
@@ -69,7 +70,6 @@ with st.form("final_itinerary_form"):
         st.write("Title: ")
         st.write("Date: ")
         st.write("Reference: ")
-    st.caption("Safe travels!")
     col1, col2 = st.columns(2)
     with col1:
         saved = st.form_submit_button("Export PDF")
