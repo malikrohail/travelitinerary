@@ -38,10 +38,11 @@ st.text(" ")
 with st.form("itinerary_form"):
     st.write("Travel Itinerary")
     st.caption("Our generator compiles your content into an easy to read format. You may regenerate the itinerary as you see fit.")
-    passengers = st.text_area("Passengers",value="", placeholder="Emails", label_visibility="visible")
-    flights = st.text_area("Flight Information (Add a notice if flight has already taken off)",value="", placeholder="Emails", label_visibility="visible")
-    hotel = st.text_area("Hotel Information",value="", placeholder="Emails", label_visibility="visible")
-    activities = st.text_area("Activities",value="", placeholder="Emails", label_visibility="visible")
+    passengers = st.text_area("Passengers",value="", placeholder="Original response", label_visibility="visible")
+    flights = st.text_area("Flight Information",value="", placeholder="Original response", label_visibility="visible")
+    st.warning('Flight has already happened.', icon="⚠️")
+    hotel = st.text_area("Hotel Information",value="", placeholder="Original response", label_visibility="visible")
+    activities = st.text_area("Activities",value="", placeholder="Original response", label_visibility="visible")
     
     col1, col2 = st.columns(2)
     with col1:
@@ -90,6 +91,7 @@ def response_generator():
 st.write("Restaurant Option 1")
 with st.chat_message("assistant"):
     st.write("Would you now like restaurant recommendations?")
+
     prompt = st.chat_input("Say something")
     if prompt == "Yes":
         st.write(f"User wants restaurant recommendations based on itinerary information.") # existing location
