@@ -1,21 +1,45 @@
 import streamlit as st
-import random
-import time
+import google.generativeai as genai
+
+# back-end functions 
+
+def extract_passengers(response):
+    sections = response.split("Passengers:")
+    passengers = sections[1].split("Flight Information:")[0]
+    return passengers
+
+def extract_flights(response):
+    sections = response.split("Flight Information:")
+    flights = sections[1].split("Travel Information:")[0]
+    return flights
+
+def extract_hotel(response):
+    sections = response.split("Travel Information:")
+    hotel = sections[1].split("Activities:")[0]
+    return hotel
+
+def extract_activities(response):
+    sections = response.split("Activities:")
+    return sections[1]
 
 st.markdown('# Travel Itinerary Generator')
 st.write("Input your content, and watch as our bot generates your travel itinerary and provides recommendations!")
 st.caption("Note only PDFs, text, and images are permitted.")
 
-# need to fix color
-st.markdown("""
-<style>
-button {
-    background-color: #456990;
-    color: #D8E1EB;
-}
-</style>"""
-, unsafe_allow_html=True)
 
+model = genai.GenerativeModel('gemini-1.5-flash')
+
+st.markdown("""
+    <style>
+    button:first-child {
+        background-color: #456990;
+        color: #D8E1EB;
+        border-radius:10px 10px 10px 10px;
+        height: 2.5em;
+        width: 7em;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
 if 'current_form' not in st.session_state:
     st.session_state.current_form = 'initial'  # Track which form to show
@@ -29,6 +53,7 @@ if st.session_state.current_form == 'initial':
 
         # text 
         text_val = st.text_area("Copy and paste your email(s).",value="", placeholder="Emails", label_visibility="visible")
+        st.session_state.travel_info = text_val
 
         # files
         uploaded_files = st.file_uploader(
@@ -40,8 +65,12 @@ if st.session_state.current_form == 'initial':
 
         submitted = st.form_submit_button("Submit")
         if submitted:
-            st.write("Confirming emails. . . ", text_val)
-            # st.write("image",uploaded_file )
+            generated_itinerary = model.generate_content("Generate a travel itineray based on these emails, organize response by 4 category titles, passengers, flight information, travel information, and activities if applicable: " + text_val)
+            st.session_state.generated_itinerary = generated_itinerary
+            formatted_response = generated_itinerary.candidates[0].content.parts[0].text
+            st.session_state.formatted_response = formatted_response
+            #st.write(formatted_response)
+            #st.write("image",uploaded_file )
             #show_itinerary_form = True # will allow next form to show up now 
             #show_final_itinerary_form = False
             #show_initial_form = False
@@ -53,16 +82,21 @@ if st.session_state.current_form == 'itinerary':
     with st.form("itinerary_form"):
         st.write("Travel Itinerary")
         st.caption("Our generator compiles your content into an easy to read format. You may regenerate the itinerary as you see fit.")
+        passengers_info = extract_passengers(st.session_state.formatted_response)
+        flights_info = extract_flights(st.session_state.formatted_response)
+        hotel_info = extract_hotel(st.session_state.formatted_response)
+        activities_info = extract_activities(st.session_state.formatted_response)
 
-        passengers = st.text_area("Passengers",value="", placeholder="Original response", label_visibility="visible")
-        flights = st.text_area("Flight Information",value="", placeholder="Original response", label_visibility="visible")
+        passengers = st.text_area("Passengers",value=passengers_info, placeholder=passengers_info, label_visibility="visible")
+        flights = st.text_area("Flight Information",value=flights_info, placeholder=flights_info, label_visibility="visible")
         st.warning('Flight has already happened.', icon="⚠️")
-        hotel = st.text_area("Hotel Information",value="", placeholder="Original response", label_visibility="visible")
-        activities = st.text_area("Activities",value="", placeholder="Original response", label_visibility="visible")
+        hotel = st.text_area("Hotel Information",value=hotel_info, placeholder=hotel_info, label_visibility="visible")
+        activities = st.text_area("Activities",value=activities_info, placeholder=activities_info, label_visibility="visible")
 
-        saved = st.form_submit_button("Save Itinerary")
+        saved = st.form_submit_button("Save")
         if saved:
             st.session_state.current_form = 'final'
+  
 
 if st.session_state.current_form == 'final':
     with st.form("final_itinerary_form"):
@@ -70,23 +104,27 @@ if st.session_state.current_form == 'final':
         st.caption("Safe travels!")
 
         with st.expander("Passengers"):
-            st.write("1. Name: ")
+            #st.write("1. Name: ")
+            st.write(passengers)
 
         with st.expander("Flight Information"):
-            st.write("Departure: ")
-            st.write("Arrival: ")
-            st.write("Booking Reference: ")
-            st.write("Flight Code: ")
+            #st.write("Departure: ")
+            #st.write("Arrival: ")
+            #st.write("Booking Reference: ")
+            #st.write("Flight Code: ")
+            st.write(flights)
 
         with st.expander("Hotel Information"):
-            st.write("Check-In: ")
-            st.write("Check-Out: ")
-            st.write("Address: ")
+            #st.write("Check-In: ")
+            #st.write("Check-Out: ")
+            #st.write("Address: ")
+            st.write(hotel)
 
         with st.expander("Activities"):
-            st.write("Title: ")
-            st.write("Date: ")
-            st.write("Reference: ")
+            #st.write("Title: ")
+            #st.write("Date: ")
+            #st.write("Reference: ")
+            st.write(activities)
 
         col1, col2 = st.columns(2)
         with col1:
@@ -96,9 +134,26 @@ if st.session_state.current_form == 'final':
             regenerated = st.form_submit_button("Save Text")
             show_next_steps = True
 
+
 if st.session_state.current_form != 'initial':
     if st.button("Start Over"):
         st.session_state.current_form = 'initial' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -138,6 +193,7 @@ if show_next_steps:
     st.write("Uber")
     with st.form("uber_call"):
         st.write("Space for Uber API")
-        submitted = st.form_submit_button("Book Transportation")
+        submitted = st.form_submit_button("Book")
 
 st.markdown('[Back to Top](#travel-itinerary-generator)')
+
