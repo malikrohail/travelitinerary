@@ -31,7 +31,6 @@ def extract_activities(response):
 st.markdown('# Travel Itinerary Generator')
 st.write("Input your content, and watch as our bot generates your travel itinerary and provides recommendations!")
 st.caption("Note only PDFs, text, and images are permitted.")
-genai.configure(api_key="AIzaSyDAx1l-Zs5x1W-6QEZnohRSywb5X-OR_Kc")
 model = genai.GenerativeModel('gemini-1.5-flash')
 
 st.markdown("""
