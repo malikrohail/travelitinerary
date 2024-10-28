@@ -1,10 +1,17 @@
 import streamlit as st
+import os
+from dotenv import load_dotenv
 import google.generativeai as genai
+
+# Load environment variables
+load_dotenv()
+
+# Set up the API key from .env
+api_key = os.getenv("GENAI_API_KEY")
+genai.configure(api_key=api_key)
 
 
 # back-end functions
-
-
 def extract_passengers(response):
    sections = response.split("Passengers:")
    passengers = sections[1].split("Flight Information:")[0]
@@ -221,4 +228,3 @@ if show_next_steps:
         submitted = st.form_submit_button("Book")
 
 st.markdown('[Back to Top](#travel-itinerary-generator)')
-
