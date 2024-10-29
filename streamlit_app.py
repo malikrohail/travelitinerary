@@ -1,14 +1,20 @@
 import streamlit as st
+import json
+import base64
 import os
 from dotenv import load_dotenv
 import google.generativeai as genai
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+from google.auth.transport.requests import Request
 
 # Load environment variables
 load_dotenv()
-
 # Set up the API key from .env
 api_key = os.getenv("GENAI_API_KEY")
 genai.configure(api_key=api_key)
+
 
 
 # back-end functions
