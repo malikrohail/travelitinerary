@@ -1,0 +1,75 @@
+Email_Content,Predicted_Label
+"Subject: Your Flight Booking Confirmation
+
+Dear Susan,
+
+Your flight from New York City to Boston is confirmed. Below are your flight details:
+
+- Flight Number: AA1102
+- Departure Date: September 21st, 2022
+- Departure Time: 12:01 PM EST
+- Arrival Time: 1:20 PM EST
+
+We look forward to having you on board.
+
+Best regards,
+American Airlines",booking
+"Subject: Hotel Reservation Confirmed
+
+Dear John,
+
+Thank you for choosing Mariott Hotel. Your reservation has been confirmed with the following details:
+
+- Check-in Date: August 2nd, 2002
+- Check-out Date: August 7th, 2002
+- Room Type: Double
+- Number of Guests: 4
+
+We look forward to your stay.
+
+Best regards,  
+Mariott Hotel",booking
+"Subject: Your Activity Booking Confirmation
+
+Dear Marisol,
+
+Your booking for the Empire State Building tour has been confirmed. Here are the details:
+
+- Activity: Empire State Building tour
+- Date: April 10th, 2024
+- Time: 12:00 PM EST
+- Location: 20 W 34th St., New York, NY 10001, United States
+
+We hope you enjoy your experience!
+
+Best regards,  
+Empire State Building staff",booking
+"Subject: Restaurant Reservation Confirmed
+
+Dear Lequinn,
+
+Your table reservation at Upland is confirmed with the following details:
+
+- Reservation Date: 04-01-2024
+- Time: 8 pm EST
+- Number of Guests: 10
+
+We look forward to hosting you.
+
+Best regards,  
+Upland",booking
+"Subject: Your Booking Is Confirmed
+
+Dear Jin,
+
+We are pleased to confirm your booking for the following event:
+
+- Event: Ed Sheeran concert
+- Date: 04-02-2026
+- Time: Doors open at 6 pm 
+- Location: Madison Square Garden 
+
+Thank you for choosing us!
+
+Best regards,  
+Madison Square Garden staff",booking

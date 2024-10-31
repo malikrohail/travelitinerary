@@ -15,7 +15,7 @@ def get_gmail_credentials():
     if not creds or not creds.valid:
         try:
             flow = InstalledAppFlow.from_client_secrets_file(CONFIG_FILE, SCOPES)
-            # Specify 127.0.0.1 instead of localhost
+            # Specifying 127.0.0.1 instead of localhost cause of port issues
             creds = flow.run_local_server(
                 host='127.0.0.1',
                 port=8080,
@@ -37,7 +37,6 @@ def test_gmail_connection():
         service = build('gmail', 'v1', credentials=creds)
         
         print("Fetching user profile...")
-        # Rest of the code remains the same...
         
     except Exception as e:
         print(f"Error testing Gmail connection: {str(e)}")
