@@ -31,44 +31,54 @@ def get_gmail_credentials():
             raise
     return creds
 
-def fetch_emails_with_reservation(service, max_results=3):
+def fetch_emails_with_terms(service, terms, max_results=1):
     """
-    Fetch emails containing the term 'reservation'.
+    Fetch emails containing specified terms.
     """
-    try:
-        query = 'reservation'  # Searching for emails containing the term 'reservation'
-        print(f"Query: {query}")  # Debugging output
-        results = service.users().messages().list(userId='me', q=query, maxResults=max_results).execute()
-        messages = results.get('messages', [])
+    for term in terms:
+        try:
+            query = term  # Searching for emails containing the term
+            print(f"Query: {query}")  # Debugging output
+            results = service.users().messages().list(userId='me', q=query, maxResults=max_results).execute()
+            messages = results.get('messages', [])
 
-        if not messages:
-            print("No messages found.")
-            return
+            if not messages:
+                print(f"No messages found for term: {term}")
+                continue
 
-        for msg in messages:
-            # Fetch the full message
-            msg = service.users().messages().get(userId='me', id=msg['id']).execute()
-            print(f"Email Subject: {msg['snippet']}")  # Print the email subject
-            
-            # Check if 'payload' exists and contains 'parts'
-            if 'payload' in msg and 'parts' in msg['payload']:
-                for part in msg['payload']['parts']:
-                    # Process each part
-                    if 'body' in part and 'data' in part['body']:
-                        # Decode the base64url encoded content
-                        body_data = part['body']['data']
-                        decoded_body = base64.urlsafe_b64decode(body_data).decode('utf-8')
-                        
-                        # Parse the HTML content
-                        soup = BeautifulSoup(decoded_body, 'html.parser')
-                        text_body = soup.get_text()  # Extract text from HTML
-                        print(f"Email Body: {text_body}")  # Print the email body
-            else:
-                print("No parts found in the email.")
-                # Handle the case where there are no parts
-
-    except Exception as e:
-        print(f"Error fetching emails: {str(e)}")
+            for msg in messages:
+                # Fetch the full message
+                msg = service.users().messages().get(userId='me', id=msg['id']).execute()
+                print(f"Email Subject: {msg['snippet']}")  # Print the email subject
+                
+                # Check if 'payload' exists and contains 'parts'
+                if 'payload' in msg and 'parts' in msg['payload']:
+                    for part in msg['payload']['parts']:
+                        # Process each part
+                        if 'body' in part and 'data' in part['body']:
+                            # Decode the base64url encoded content
+                            body_data = part['body']['data']
+                            decoded_body = base64.urlsafe_b64decode(body_data).decode('utf-8')
+                            
+                            # Parse the HTML content
+                            soup = BeautifulSoup(decoded_body, 'html.parser')
+                            text_body = soup.get_text()  # Extract text from HTML
+                            print(f"Email Body: {text_body}")  # Print the email body
+                        # Check for attachments
+                        if 'filename' in part and part['filename'].endswith('.pdf'):
+                            attachment_id = part['body']['attachmentId']
+                            attachment = service.users().messages().attachments().get(userId='me', messageId=msg['id'], id=attachment_id).execute()
+                            pdf_data = base64.urlsafe_b64decode(attachment['data'])
+                            # process the PDF data as needed
+                            print(f"PDF Attachment: {part['filename']}")  # Print the name of the PDF attachment
+                            # save it to a file:
+                            with open(part['filename'], 'wb') as pdf_file:
+                                pdf_file.write(pdf_data)
+                                print(f"Saved PDF: {part['filename']}")  # Confirm saving the PDF
+                else:
+                    print("No parts found in the email.")
+        except Exception as e:
+            print(f"Error fetching emails for term '{term}': {str(e)}")
 
 def test_gmail_connection():
     try:
@@ -80,8 +90,8 @@ def test_gmail_connection():
         
         print("Fetching user profile...")
         
-        # Fetch emails containing the term 'reservation'
-        fetch_emails_with_reservation(service)
+        # Fetch emails containing the terms 'reservation' and 'flight'
+        fetch_emails_with_terms(service, ['reservation', 'flight'])
         
     except Exception as e:
         print(f"Error testing Gmail connection: {str(e)}")
